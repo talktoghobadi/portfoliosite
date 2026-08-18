@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maryam Ghobadi — Instructional Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1F2A24;
+    --ink-soft: #2C3B33;
+    --chalk: #EDEDE3;
+    --chalk-dim: #B9C2BB;
+    --paper: #F5F1E6;
+    --paper-line: #E2DCC9;
+    --paper-shadow: #d8d1ba;
+    --highlight: #E8B94A;
+    --highlight-ink: #5c4212;
+    --teal: #4F7C74;
+    --teal-deep: #3a5c56;
+    --coral: #C1543F;
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    font-size:17px;
+    line-height:1.6;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    margin:0;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+  }
+  a{color:var(--teal-deep);}
+
+  /* ---------- FOLDER TAB NAV ---------- */
+  nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    gap:6px;
+    padding:14px 24px 0;
+    background:var(--paper);
+    overflow-x:auto;
+  }
+  nav a{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.04em;
+    text-decoration:none;
+    color:var(--ink-soft);
+    background:#ECE6D4;
+    border:1px solid var(--paper-line);
+    border-bottom:none;
+    padding:8px 14px 10px;
+    border-radius:6px 6px 0 0;
+    white-space:nowrap;
+    position:relative;
+    top:1px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav a:hover, nav a:focus-visible{
+    background:var(--paper);
+    color:var(--ink);
+  }
+  nav a::before{
+    content:"";
+  }
+
+  section{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 24px;
+    border-bottom:1px solid var(--paper-line);
+  }
+  section:last-of-type{border-bottom:none;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:var(--teal-deep);
+    margin-bottom:10px;
+    display:block;
+  }
+
+  /* ---------- HERO (chalkboard) ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.03), transparent 60%),
+      var(--ink);
+    color:var(--chalk);
+    padding:96px 24px 88px;
+    border-bottom:none;
+    position:relative;
+  }
+  .hero-inner{max-width:760px;margin:0 auto;}
+  .hero .eyebrow{color:var(--chalk-dim);}
+  .hero h1{
+    font-size:clamp(32px, 5.2vw, 50px);
+    line-height:1.18;
+    font-style:italic;
+    font-weight:500;
+    max-width:14ch;
+  }
+  .hero .role{
+    margin-top:22px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    color:var(--chalk-dim);
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+  }
+  .chalk-underline{
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--highlight);
+    text-underline-offset: 4px;
+  }
+
+  /* ---------- ANNOTATION SYSTEM ---------- */
+  .annot{
+    position:relative;
+    cursor:help;
+    background-image: linear-gradient(transparent 62%, rgba(232,185,74,0.55) 62%);
+    background-repeat:no-repeat;
+    padding:0 1px;
+    border-bottom:1px dotted var(--coral);
+  }
+  .hero .annot{
+    background-image: linear-gradient(transparent 62%, rgba(232,185,74,0.28) 62%);
+    border-bottom-color: var(--highlight);
+  }
+  .annot .note{
+    display:none;
+    position:absolute;
+    left:0;
+    top:calc(100% + 10px);
+    width:230px;
+    background:var(--chalk);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    line-height:1.5;
+    padding:10px 12px;
+    border-radius:2px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.18);
+    z-index:20;
+    text-transform:none;
+    letter-spacing:normal;
+  }
+  .annot .note::before{
+    content:"—  margin note";
+    display:block;
+    font-size:10px;
+    color:var(--teal-deep);
+    margin-bottom:4px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+  .annot:hover .note, .annot:focus .note{ display:block; }
+  .hero .annot .note{ background:var(--paper); }
+
+  /* ---------- CARDS / PAPER TEXTURE ---------- */
+  .card{
+    background:#FBF8EF;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    box-shadow: 3px 3px 0 var(--paper-shadow);
+  }
+  .card + .card{ margin-top:18px; }
+
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.04em;
+    color:var(--teal-deep);
+    background:#E4EEEC;
+    border:1px solid #cfe0dc;
+    padding:3px 8px;
+    border-radius:3px;
+    margin:0 6px 6px 0;
+  }
+
+  .process-item{
+    display:flex;
+    gap:16px;
+    padding:16px 0;
+    border-top:1px solid var(--paper-line);
+  }
+  .process-item:first-child{border-top:none;padding-top:6px;}
+  .process-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--coral);
+    font-size:13px;
+    min-width:26px;
+    padding-top:3px;
+  }
+  .process-item h3{font-size:18px;margin-bottom:5px;}
+  .process-item p{margin:0;color:var(--ink-soft);}
+
+  .skills-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+  }
+  @media(max-width:560px){ .skills-grid{grid-template-columns:1fr;} }
+  .skills-grid h4{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--teal-deep);
+    margin-bottom:8px;
+  }
+  .skills-grid ul{margin:0;padding-left:18px;color:var(--ink-soft);}
+  .skills-grid li{margin-bottom:4px;}
+
+  .projects-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:18px;
+  }
+  .project-card{
+    background:#FBF8EF;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    box-shadow:3px 3px 0 var(--paper-shadow);
+    position:relative;
+  }
+  .project-card.placeholder{
+    background:repeating-linear-gradient(
+      135deg,
+      #FBF8EF,
+      #FBF8EF 10px,
+      #F3EEDD 10px,
+      #F3EEDD 11px
+    );
+    border-style:dashed;
+    box-shadow:none;
+  }
+  .project-card h3{
+    font-size:17px;
+    margin-bottom:6px;
+  }
+  .project-card p{
+    margin:0;
+    color:var(--ink-soft);
+  }
+  .project-card .slot-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--coral);
+    display:block;
+    margin-bottom:8px;
+  }
+  .project-card .fill-btn{
+    display:inline-block;
+    margin-top:12px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--teal-deep);
+    border:1px solid #cfe0dc;
+    background:#E4EEEC;
+    padding:5px 10px;
+    border-radius:3px;
+    text-decoration:none;
+  }
+
+  footer{
+    background:var(--ink);
+    color:var(--chalk-dim);
+    text-align:center;
+    padding:48px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+  footer a{color:var(--highlight);}
+
+  .btn{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    text-decoration:none;
+    color:var(--ink);
+    background:var(--highlight);
+    padding:10px 18px;
+    border-radius:3px;
+    margin:8px 6px 0;
+    box-shadow:2px 2px 0 var(--highlight-ink);
+    transition:transform .1s ease;
+  }
+  .btn:hover{ transform:translate(-1px,-1px); }
+
+  h2{font-size:26px;margin-bottom:20px;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .btn{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav aria-label="Section navigation">
+  <a href="#about">About</a>
+  <a href="#project">Flagship Project</a>
+  <a href="#more-projects">More Projects</a>
+  <a href="#process">Process</a>
+  <a href="#skills">Skills</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow mono">Instructional Design · Arlington, VA</span>
+    <h1>
+      I turn
+      <span class="annot" tabindex="0">confusing feedback<span class="note">7 years of decoding this exact problem for students — now applying it to workplace learners.</span></span>
+      into clear, doable next steps.
+    </h1>
+    <p class="role">
+      <span>Maryam Ghobadi</span>
+      <span>·</span>
+      <span>ESOL Educator → Instructional Designer</span>
+      <span>·</span>
+      <span>M.T. ESL, UVA</span>
+    </p>
+  </div>
+</header>
+
+<section id="about">
+  <span class="eyebrow">About</span>
+  <h2>From the classroom to the course build</h2>
+  <div class="card">
+    <p>For seven years, my job has been the same core problem instructional designers solve every day: take something a learner doesn't understand, and rebuild it so they do. As an <span class="annot" tabindex="0">English and ESOL teacher<span class="note">Licensed English 6-12 & ESOL PreK-12, Virginia.</span></span>, I've differentiated instruction for multilingual learners, designed formative assessments, and rewritten unclear material until it actually lands — <span class="annot" tabindex="0">producing over 80% of my own instructional materials<span class="note">Stated achievement, from resume — not a stock line.</span></span> along the way.</p>
+    <p>I'm now completing a <span class="annot" tabindex="0">Graduate Certificate in Instructional Design &amp; Development<span class="note">Oregon State University, in progress.</span></span> at Oregon State University, applying that same instinct to workplace and adult learning contexts — with a particular interest in training that serves multilingual and cross-cultural teams.</p>
+  </div>
+</section>
+
+<section id="project">
+  <span class="eyebrow">Flagship Project</span>
+  <h2>Giving Feedback in Cross-Cultural Teams</h2>
+  <p style="color:var(--ink-soft); margin-top:-8px;">A scenario-based microlearning module helping multilingual employees decode common American workplace feedback patterns.</p>
+
+  <div class="card">
+    <h3 style="font-size:17px;">The challenge</h3>
+    <p style="margin:8px 0 0;">A workforce with many multilingual employees kept losing signal in manager feedback — indirect phrasing, the "feedback sandwich," mismatched urgency in written notes. Not a language-fluency problem. A <span class="annot" tabindex="0">pattern-recognition gap<span class="note">This framing — a performance gap, not a knowledge gap — is what separates ID thinking from just "make a course."</span></span>.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:17px;">What I built</h3>
+    <p style="margin:8px 0 0;">A 10–15 minute branching-scenario module: a feedback conversation going wrong, five decision-point scenarios drawn from real classroom-observed patterns, and a closing rewrite exercise.</p>
+    <div style="margin-top:14px;">
+      <span class="tag">ADDIE-framed, SAM-paced</span>
+      <span class="tag">Rise 360</span>
+      <span class="tag">Branching scenarios</span>
+      <span class="tag">AI-assisted drafting</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:17px;">Where AI fit — and where it didn't</h3>
+    <p style="margin:8px 0 0;">I used Claude to generate a first draft of five scenario dialogues. Then I rewrote each one against seven years of watching these exact misunderstandings happen — correcting tone, cutting stereotype risk, and grounding the "coaching notes" in real classroom patterns rather than generic advice. <span class="annot" tabindex="0">The judgment was mine<span class="note">This is the line reviewers are specifically screening for right now — AI accelerates drafts; it doesn't replace pedagogical judgment.</span></span>; AI moved the first draft faster.</p>
+  </div>
+
+  <a class="btn" href="#" onclick="return false;">View full case study →</a>
+  <p class="mono" style="font-size:11.5px; color:var(--ink-soft); margin-top:6px;">(link to full write-up / module walkthrough)</p>
+</section>
+
+<section id="more-projects">
+  <span class="eyebrow">More Projects</span>
+  <h2>Additional work</h2>
+  <p style="color:var(--ink-soft); margin-top:-8px;">One flagship case study is often stronger than five thin ones — but a few well-chosen pieces show range. Slots below are ready for your next builds.</p>
+
+  <div class="projects-grid">
+    <div class="project-card placeholder">
+      <span class="slot-label mono">Project 02 — open slot</span>
+      <h3>Title goes here</h3>
+      <p>One or two sentences: the problem, who it was for, what you built. Consider something that shows a different skill than the flagship (e.g. a job aid, a short compliance module, or a curriculum redesign).</p>
+      <a class="fill-btn" href="#" onclick="return false;">+ Add project</a>
+    </div>
+    <div class="project-card placeholder">
+      <span class="slot-label mono">Project 03 — open slot</span>
+      <h3>Title goes here</h3>
+      <p>Good candidate: something that shows tool range — a Storyline or Canva-built piece, or a video/voiceover-driven module, to balance the Rise-based flagship.</p>
+      <a class="fill-btn" href="#" onclick="return false;">+ Add project</a>
+    </div>
+    <div class="project-card placeholder">
+      <span class="slot-label mono">Project 04 — open slot</span>
+      <h3>Title goes here</h3>
+      <p>Good candidate: a project drawn straight from your classroom work, reframed through an ID lens — e.g. a differentiated unit plan or an assessment redesign, annotated with the design thinking behind it.</p>
+      <a class="fill-btn" href="#" onclick="return false;">+ Add project</a>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <span class="eyebrow">Process</span>
+  <h2>How I work</h2>
+  <div class="card" style="box-shadow:none; padding:6px 24px;">
+    <div class="process-item">
+      <span class="process-num mono">01</span>
+      <div>
+        <h3>Diagnose before designing</h3>
+        <p>Is this actually a training-solvable problem? I ask this before opening an authoring tool.</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <span class="process-num mono">02</span>
+      <div>
+        <h3>Objectives tied to behavior</h3>
+        <p>Not "understand X" — "given Y, learner will do Z." Measurable, or it doesn't count.</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <span class="process-num mono">03</span>
+      <div>
+        <h3>Draft fast, revise by hand</h3>
+        <p>AI drafts, I edit — an ADDIE skeleton with SAM-style iterative refinement inside it.</p>
+      </div>
+    </div>
+    <div class="process-item">
+      <span class="process-num mono">04</span>
+      <div>
+        <h3>Plan the evaluation up front</h3>
+        <p>Kirkpatrick-informed: how will I know if this actually changed behavior, not just completion rates?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <span class="eyebrow">Skills</span>
+  <h2>Tools &amp; frameworks</h2>
+  <div class="skills-grid">
+    <div>
+      <h4>Authoring &amp; media</h4>
+      <ul>
+        <li>Articulate Rise 360</li>
+        <li>Canva</li>
+        <li>Camtasia (learning)</li>
+      </ul>
+    </div>
+    <div>
+      <h4>AI-assisted workflow</h4>
+      <ul>
+        <li>Claude / ChatGPT for drafting</li>
+        <li>Scenario &amp; assessment ideation</li>
+        <li>Human-edited, always</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Models &amp; frameworks</h4>
+      <ul>
+        <li>ADDIE, SAM</li>
+        <li>Bloom's Taxonomy</li>
+        <li>Gagné's Nine Events</li>
+        <li>Kirkpatrick's Four Levels</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Specialization</h4>
+      <ul>
+        <li>Multilingual &amp; ESOL learners</li>
+        <li>Differentiated instruction</li>
+        <li>Formative assessment design</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="text-align:center;">
+  <span class="eyebrow" style="justify-content:center;">Contact</span>
+  <h2>Let's talk</h2>
+  <p style="color:var(--ink-soft);">Open to instructional design, learning experience, and L&amp;D roles across corporate, healthcare, and government training.</p>
+  <a class="btn" href="mailto:talktoghobadi@gmail.com">talktoghobadi@gmail.com</a>
+  <br>
+  <a class="btn" href="Maryam_Ghobadi_Resume_VersionA.pdf" style="background:transparent; color:var(--teal-deep); border:1px solid #cfe0dc; box-shadow:none;" download>Résumé — Corporate/Healthcare ↓</a>
+  <a class="btn" href="Maryam_Ghobadi_Resume_VersionB.pdf" style="background:transparent; color:var(--teal-deep); border:1px solid #cfe0dc; box-shadow:none;" download>Résumé — Gov/Defense ↓</a>
+</section>
+
+<footer>
+  <p>Maryam Ghobadi · Arlington, VA · <a href="#about">back to top ↑</a></p>
+</footer>
+
+</body>
+</html>
